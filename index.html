@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pyxel 問題集</title>
+
+  <!-- YAMLの解析 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+
+  <!-- Pythonのシンタックスハイライト -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css"
+  >
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/python.min.js"></script>
+
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&display=swap');
+
+  :root {
+    --bg: #080b18;
+    --panel: #11172b;
+    --panel-light: #18213b;
+    --cyan: #00f5ff;
+    --pink: #ff4bd8;
+    --yellow: #ffe66d;
+    --text: #e8edff;
+    --muted: #929bbd;
+    --border: #303c68;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 22px 48px;
+    font-family: 'DotGothic16', monospace;
+    line-height: 1.8;
+    color: var(--text);
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(rgba(0, 245, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 245, 255, 0.025) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.12;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 3px,
+      #000 4px
+    );
+  }
+
+  h1 {
+    margin: 0;
+    padding: 22px 12px;
+    text-align: center;
+    color: var(--cyan);
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(18px, 4vw, 30px);
+    line-height: 1.8;
+    text-shadow:
+      3px 3px 0 #174c85,
+      0 0 18px rgba(0, 245, 255, 0.35);
+    border-top: 2px solid var(--cyan);
+    border-bottom: 2px solid var(--cyan);
+  }
+
+  body > p {
+    text-align: center;
+    color: var(--muted);
+    margin: 18px 0 32px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--pink);
+    font-size: 14px;
+  }
+
+  select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 24px;
+    font: inherit;
+    color: var(--cyan);
+    background: var(--panel);
+    border: 2px solid var(--border);
+    border-radius: 0;
+    outline: none;
+  }
+
+  select:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 12px rgba(0, 245, 255, 0.2);
+  }
+
+  main {
+    padding: clamp(16px, 4vw, 30px);
+    background: rgba(17, 23, 43, 0.96);
+    border: 2px solid var(--border);
+    box-shadow:
+      6px 6px 0 #03050d,
+      0 0 24px rgba(0, 245, 255, 0.05);
+  }
+
+  h2 {
+    margin: 28px 0 12px;
+    padding: 8px 12px;
+    color: var(--cyan);
+    background: var(--panel-light);
+    border-left: 4px solid var(--pink);
+    font-size: 18px;
+  }
+
+  #problem-title {
+    margin-top: 0;
+    border-left-color: var(--yellow);
+  }
+
+  #problem-description,
+  #problem-instructions {
+    color: #c1c9e5;
+  }
+
+  #problem-instructions li {
+    margin: 6px 0;
+  }
+
+  .code-container {
+    position: relative;
+    width: 100%;
+    height: 460px;
+    overflow: hidden;
+    background: #070a12;
+    border: 2px solid var(--cyan);
+    border-radius: 0;
+    box-shadow: inset 0 0 18px rgba(0, 245, 255, 0.06);
+  }
+
+  #highlighted-code,
+  #practice-code {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 16px;
+    border: 0;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.65;
+    letter-spacing: normal;
+    tab-size: 4;
+    white-space: pre;
+    overflow: auto;
+  }
+
+  #highlighted-code {
+    z-index: 1;
+    pointer-events: none;
+    color: #e6edf3;
+    background: transparent;
+  }
+
+  #highlighted-code code {
+    display: block;
+    padding: 0;
+    font: inherit;
+    line-height: inherit;
+    background: transparent;
+  }
+
+  #practice-code {
+    z-index: 2;
+    resize: none;
+    background: transparent;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    caret-color: var(--yellow);
+    outline: none;
+  }
+
+  #practice-code::selection {
+    background: rgba(0, 245, 255, 0.28);
+  }
+
+  #status {
+    min-height: 1.8em;
+    color: var(--yellow);
+    font-size: 13px;
+  }
+
+  .game-link {
+    display: block;
+    position: relative;
+    margin: 24px 0 12px;
+    padding: 16px;
+    text-align: center;
+    color: #080b18;
+    background: var(--pink);
+    border: 2px solid #ffb0ed;
+    border-radius: 0;
+    box-shadow: 0 5px 0 #9a2381;
+    text-decoration: none;
+    font-weight: bold;
+    transition: transform 0.08s, box-shadow 0.08s;
+  }
+
+  .game-link::before {
+    content: "▶ ";
+  }
+
+  .game-link:hover {
+    color: #080b18;
+    background: #ff85e5;
+    box-shadow:
+      0 5px 0 #9a2381,
+      0 0 20px rgba(255, 75, 216, 0.25);
+  }
+
+  .game-link:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #9a2381;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px dashed var(--yellow);
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 20px 12px 32px;
+    }
+
+    main {
+      padding: 14px;
+    }
+
+    h1 {
+      font-size: 17px;
+    }
+
+    h2 {
+      font-size: 16px;
+    }
+
+    .code-container {
+      height: 400px;
+    }
+  }
+</style>
+
+</head>
+
+<body>
+  <h1>Pyxel 問題集</h1>
+  <p>Python と Pyxel で、プログラミングの基礎を身につけよう。</p>
+
+  <label for="problem-select">問題を選択：</label>
+  <select id="problem-select">
+    <option>読み込み中...</option>
+  </select>
+
+  <main>
+    <h2 id="problem-title">読み込み中...</h2>
+
+    <p id="problem-description" class="description"></p>
+
+    <ul id="problem-instructions"></ul>
+
+    <h2>穴埋めコード</h2>
+
+    <p>
+      コードを編集できます。キーワードや文字列などは自動で色分けされます。
+    </p>
+
+    <div class="code-container">
+      <pre id="highlighted-code" aria-hidden="true"><code class="language-python"></code></pre>
+      <textarea
+        id="practice-code"
+        spellcheck="false"
+        wrap="off"
+        aria-label="穴埋め用Pythonコード"
+        autocomplete="off"
+        autocapitalize="off"
+      ></textarea>
+    </div>
+
+    <p>
+      <a id="game-link" class="game-link" href="./01.html">
+        解答例のゲームを遊ぶ
+      </a>
+    </p>
+
+    <p id="status" role="status"></p>
+  </main>
+
+  <script>
+    let problems = [];
+
+    const select = document.getElementById("problem-select");
+    const title = document.getElementById("problem-title");
+    const description = document.getElementById("problem-description");
+    const instructions = document.getElementById("problem-instructions");
+    const codeArea = document.getElementById("practice-code");
+    const highlightedCode = document.querySelector("#highlighted-code code");
+    const highlightedPre = document.getElementById("highlighted-code");
+    const gameLink = document.getElementById("game-link");
+    const status = document.getElementById("status");
+
+    // 指定されたファイルをテキストとして読み込む
+    async function fetchText(path) {
+      const response = await fetch(path);
+
+      if (!response.ok) {
+        throw new Error(
+          `${path} を読み込めませんでした（HTTP ${response.status}）`
+        );
+      }
+
+      return response.text();
+    }
+
+    // コードのシンタックスハイライトを更新する
+    function updateHighlight() {
+      const code = codeArea.value;
+
+      highlightedCode.innerHTML = hljs.highlight(
+        code,
+        { language: "python" }
+      ).value;
+
+      // 最後の改行がある場合も表示位置を維持する
+      if (code.endsWith("\n")) {
+        highlightedCode.innerHTML += "\n";
+      }
+
+      syncScroll();
+    }
+
+    // 編集領域とハイライト表示のスクロール位置を同期する
+    function syncScroll() {
+      highlightedPre.scrollTop = codeArea.scrollTop;
+      highlightedPre.scrollLeft = codeArea.scrollLeft;
+    }
+
+    // 問題を表示する
+    async function showProblem(id) {
+      const problem = problems.find(item => item.id === id);
+
+      if (!problem) {
+        status.textContent = "指定された問題が見つかりません。";
+        return;
+      }
+
+      title.textContent = `${problem.id}：${problem.title}`;
+      description.textContent = problem.description || "";
+
+      instructions.replaceChildren();
+
+      for (const instruction of problem.instructions || []) {
+        const li = document.createElement("li");
+        li.textContent = instruction;
+        instructions.appendChild(li);
+      }
+
+      // ファイル名は問題番号から自動生成する
+      const practicePath = `./p${problem.id}.py`;
+      const gamePath = `./${problem.id}.html`;
+
+      gameLink.href = gamePath;
+      codeArea.value = "";
+      updateHighlight();
+
+      status.textContent = `${practicePath} を読み込んでいます……`;
+
+      select.value = problem.id;
+
+      // URLに現在の問題番号を反映する
+      const url = new URL(window.location.href);
+      url.searchParams.set("id", problem.id);
+      history.replaceState(null, "", url);
+
+      try {
+        codeArea.value = await fetchText(practicePath);
+        updateHighlight();
+        status.textContent = "";
+      } catch (error) {
+        status.textContent = error.message;
+      }
+    }
+
+    // 初期化
+    async function main() {
+      try {
+        const yamlText = await fetchText("./problems.yaml");
+        problems = jsyaml.load(yamlText);
+
+        if (!Array.isArray(problems) || problems.length === 0) {
+          throw new Error("問題データが空か、形式が正しくありません。");
+        }
+
+        select.replaceChildren();
+
+        for (const problem of problems) {
+          const option = document.createElement("option");
+          option.value = problem.id;
+          option.textContent = `${problem.id}：${problem.title}`;
+          select.appendChild(option);
+        }
+
+        select.addEventListener("change", () => {
+          showProblem(select.value);
+        });
+
+        // コードを編集したときにハイライトを更新する
+        codeArea.addEventListener("input", updateHighlight);
+
+        // スクロール位置を同期する
+        codeArea.addEventListener("scroll", syncScroll);
+
+        // URLの ?id=01 から初期表示する問題を決定する
+        const requestedId = new URLSearchParams(
+          window.location.search
+        ).get("id");
+
+        const initialProblem = problems.find(
+          problem => problem.id === requestedId
+        ) || problems[0];
+
+        await showProblem(initialProblem.id);
+
+      } catch (error) {
+        title.textContent = "読み込みエラー";
+        status.textContent = error.message;
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>
