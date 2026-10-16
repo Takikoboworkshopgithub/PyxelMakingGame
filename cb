@@ -1,0 +1,2674 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pyxel Game</title>
+
+    <!-- Pyxel Web Runtime -->
+    <script src="https://cdn.jsdelivr.net/gh/kitao/pyxel/wasm/pyxel.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: #101020;
+            color: #ffffff;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .game-container {
+            padding: 16px;
+            background: #202038;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+        }
+
+        .back-link {
+            color: #00ffff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pyxel Game</h1>
+
+    <div class="game-container">
+        <!-- 読み込むPythonファイルを指定 -->
+        <pyxel-run root="." name="01.py"></pyxel-run>
+    </div>
+
+    <a class="back-link" href="./index.html">
+        ← 問題一覧に戻る
+    </a>
+</body>
+</html>import pyxel
+
+
+class Player:
+    def __init__(self, x, y, color):
+        self.x = x
+        self.y = y
+        self.color = color
+
+    def update(self):
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 2
+
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 2
+
+        # 画面外に出ないようにする
+        self.x = max(0, min(self.x, 150))
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, 10, 10, self.color)
+
+
+class Game:
+    def __init__(self):
+        self.player = Player(75, 50, 7)
+
+    def update(self):
+        self.player.update()
+
+    def draw(self):
+        pyxel.cls(0)
+        self.player.draw()
+
+
+game = Game()
+
+pyxel.init(160, 120, title="Move the Square")
+pyxel.run(game.update, game.draw)
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pyxel Game</title>
+
+    <!-- Pyxel Web Runtime -->
+    <script src="https://cdn.jsdelivr.net/gh/kitao/pyxel/wasm/pyxel.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: #101020;
+            color: #ffffff;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .game-container {
+            padding: 16px;
+            background: #202038;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+        }
+
+        .back-link {
+            color: #00ffff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pyxel Game</h1>
+
+    <div class="game-container">
+        <!-- 読み込むPythonファイルを指定 -->
+        <pyxel-run root="." name="02.py"></pyxel-run>
+    </div>
+
+    <a class="back-link" href="./index.html">
+        ← 問題一覧に戻る
+    </a>
+</body>
+</html>import pyxel
+
+
+class Player:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.vy = 0
+        self.jumping = False
+
+    def update(self):
+        # 上キーでジャンプ
+        if pyxel.btnp(pyxel.KEY_UP) and not self.jumping:
+            self.vy = -5
+            self.jumping = True
+
+        # 重力によって落下する
+        self.vy += 0.2
+        self.y += self.vy
+
+        # 地面との当たり判定
+        if self.y >= 100:
+            self.y = 100
+            self.vy = 0
+            self.jumping = False
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 2
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 2
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, 10, 10, 7)
+
+
+class Game:
+    def __init__(self):
+        self.player = Player(75, 90)
+
+    def update(self):
+        self.player.update()
+
+    def draw(self):
+        pyxel.cls(0)
+
+        # 地面の線
+        pyxel.line(0, 110, 160, 110, 11)
+
+        self.player.draw()
+
+
+game = Game()
+
+pyxel.init(160, 120, title="Jump Game")
+pyxel.run(game.update, game.draw)
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pyxel Game</title>
+
+    <!-- Pyxel Web Runtime -->
+    <script src="https://cdn.jsdelivr.net/gh/kitao/pyxel/wasm/pyxel.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: #101020;
+            color: #ffffff;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .game-container {
+            padding: 16px;
+            background: #202038;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+        }
+
+        .back-link {
+            color: #00ffff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pyxel Game</h1>
+
+    <div class="game-container">
+        <!-- 読み込むPythonファイルを指定 -->
+        <pyxel-run root="." name="03.py"></pyxel-run>
+    </div>
+
+    <a class="back-link" href="./index.html">
+        ← 問題一覧に戻る
+    </a>
+</body>
+</html>import pyxel
+
+
+class Game:
+    def __init__(self):
+        self.count = 0
+
+    def update(self):
+        # 上キーで1増やす
+        if pyxel.btnp(pyxel.KEY_UP):
+            self.count += 1
+
+        # 下キーで1減らす
+        if pyxel.btnp(pyxel.KEY_DOWN):
+            self.count -= 1
+
+    def draw(self):
+        pyxel.cls(0)
+
+        # 数値を画面に表示する
+        pyxel.text(70, 55, f"Count: {self.count}", 7)
+
+
+game = Game()
+
+pyxel.init(160, 120, title="Counter")
+pyxel.run(game.update, game.draw)
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pyxel Game</title>
+
+    <!-- Pyxel Web Runtime -->
+    <script src="https://cdn.jsdelivr.net/gh/kitao/pyxel/wasm/pyxel.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: #101020;
+            color: #ffffff;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .game-container {
+            padding: 16px;
+            background: #202038;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+        }
+
+        .back-link {
+            color: #00ffff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pyxel Game</h1>
+
+    <div class="game-container">
+        <!-- 読み込むPythonファイルを指定 -->
+        <pyxel-run root="." name="04.py"></pyxel-run>
+    </div>
+
+    <a class="back-link" href="./index.html">
+        ← 問題一覧に戻る
+    </a>
+</body>
+</html>import pyxel
+import random
+
+
+class Player:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def update(self):
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 1
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 1
+        if pyxel.btn(pyxel.KEY_UP):
+            self.y -= 1
+        if pyxel.btn(pyxel.KEY_DOWN):
+            self.y += 1
+
+        # 画面外に出ないようにする
+        self.x = max(0, min(self.x, 154))
+        self.y = max(0, min(self.y, 114))
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, 6, 6, 7)
+
+
+class Point:
+    def __init__(self):
+        # 目標ポイントをランダムに決める
+        self.x = random.randint(0, 154)
+        self.y = random.randint(0, 114)
+
+    def draw(self):
+        # 目標ポイントを表示
+        pyxel.circ(self.x + 3, self.y + 3, 3, 10)
+
+
+class Game:
+    def __init__(self):
+        self.player = Player(75, 55)
+        self.point = Point()
+
+        self.distance = self.get_distance()
+        self.state = "playing"
+
+    def get_distance(self):
+        dx = self.player.x - self.point.x
+        dy = self.player.y - self.point.y
+
+        return (dx ** 2 + dy ** 2) ** 0.5
+
+    def update(self):
+        if self.state != "playing":
+            return
+
+        self.player.update()
+        self.distance = self.get_distance()
+
+        # Spaceキーで答え合わせ
+        if pyxel.btnp(pyxel.KEY_SPACE):
+            if self.distance <= 10:
+                self.state = "clear"
+            else:
+                self.state = "gameover"
+
+    def draw(self):
+        pyxel.cls(0)
+
+        if self.state == "playing":
+            self.player.draw()
+
+            pyxel.text(5, 5, f"Distance: {self.distance:.1f}", 7)
+            pyxel.text(5, 15, "Find the hidden point!", 7)
+            pyxel.text(5, 25, "Arrow: Move  SPACE: Check", 7)
+
+        elif self.state == "clear":
+            pyxel.cls(3)
+
+            # プレイヤーからポイントまでラインを引く
+            pyxel.line(
+                self.player.x + 3,
+                self.player.y + 3,
+                self.point.x + 3,
+                self.point.y + 3,
+                7
+            )
+
+            self.point.draw()
+            self.player.draw()
+
+            pyxel.text(65, 10, "CLEAR!", 7)
+            pyxel.text(35, 20, "You found the point!", 7)
+
+        elif self.state == "gameover":
+            pyxel.cls(8)
+
+            # プレイヤーからポイントまでラインを引く
+            pyxel.line(
+                self.player.x + 3,
+                self.player.y + 3,
+                self.point.x + 3,
+                self.point.y + 3,
+                7
+            )
+
+            self.point.draw()
+            self.player.draw()
+
+            pyxel.text(55, 10, "GAME OVER", 7)
+            pyxel.text(35, 20, "The point is here!", 7)
+
+
+game = Game()
+
+pyxel.init(160, 120, title="Find the Point")
+pyxel.run(game.update, game.draw)
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pyxel Game</title>
+
+    <!-- Pyxel Web Runtime -->
+    <script src="https://cdn.jsdelivr.net/gh/kitao/pyxel/wasm/pyxel.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: #101020;
+            color: #ffffff;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .game-container {
+            padding: 16px;
+            background: #202038;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+        }
+
+        .back-link {
+            color: #00ffff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pyxel Game</h1>
+
+    <div class="game-container">
+        <!-- 読み込むPythonファイルを指定 -->
+        <pyxel-run root="." name="05.py"></pyxel-run>
+    </div>
+
+    <a class="back-link" href="./index.html">
+        ← 問題一覧に戻る
+    </a>
+</body>
+</html>import pyxel
+
+
+# 共通する機能を持つ親クラス
+class Player:
+    def __init__(self, x, y, color):
+        self.x = x
+        self.y = y
+        self.color = color
+
+    def update(self):
+        pass
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, 10, 10, self.color)
+
+
+# WASDキーで動く子クラス
+class WASDPlayer(Player):
+    def __init__(self, x, y, color):
+        super().__init__(x, y, color)
+
+    def update(self):
+        if pyxel.btn(pyxel.KEY_A):
+            self.x -= 1
+        if pyxel.btn(pyxel.KEY_D):
+            self.x += 1
+        if pyxel.btn(pyxel.KEY_W):
+            self.y -= 1
+        if pyxel.btn(pyxel.KEY_S):
+            self.y += 1
+
+
+# 矢印キーで動く子クラス
+class ArrowPlayer(Player):
+    def __init__(self, x, y, color):
+        super().__init__(x, y, color)
+
+    def update(self):
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 1
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 1
+        if pyxel.btn(pyxel.KEY_UP):
+            self.y -= 1
+        if pyxel.btn(pyxel.KEY_DOWN):
+            self.y += 1
+
+
+class Game:
+    def __init__(self):
+        self.player1 = WASDPlayer(30, 50, 7)
+        self.player2 = ArrowPlayer(120, 50, 8)
+        self.state = "playing"
+
+    def collision(self):
+        # 2人のプレイヤーが重なったか判定
+        if (
+            self.player1.x < self.player2.x + 10
+            and self.player1.x + 10 > self.player2.x
+            and self.player1.y < self.player2.y + 10
+            and self.player1.y + 10 > self.player2.y
+        ):
+            return True
+
+        return False
+
+    def update(self):
+        if self.state == "gameover":
+            return
+
+        self.player1.update()
+        self.player2.update()
+
+        # 衝突したらゲームオーバー
+        if self.collision():
+            self.state = "gameover"
+
+    def draw(self):
+        pyxel.cls(0)
+
+        if self.state == "playing":
+            self.player1.draw()
+            self.player2.draw()
+
+        elif self.state == "gameover":
+            pyxel.cls(8)
+            pyxel.text(55, 55, "GAME OVER", 7)
+
+
+game = Game()
+
+pyxel.init(160, 120)
+pyxel.run(game.update, game.draw)
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pyxel Game</title>
+
+    <!-- Pyxel Web Runtime -->
+    <script src="https://cdn.jsdelivr.net/gh/kitao/pyxel/wasm/pyxel.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: #101020;
+            color: #ffffff;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .game-container {
+            padding: 16px;
+            background: #202038;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+        }
+
+        .back-link {
+            color: #00ffff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pyxel Game</h1>
+
+    <div class="game-container">
+        <!-- 読み込むPythonファイルを指定 -->
+        <pyxel-run root="." name="06.py"></pyxel-run>
+    </div>
+
+    <a class="back-link" href="./index.html">
+        ← 問題一覧に戻る
+    </a>
+</body>
+</html>import pyxel
+import random
+
+
+class Player:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def update(self):
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 2
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 2
+
+        self.x = max(0, min(self.x, 150))
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, 10, 10, 7)
+
+
+class Meteor:
+    def __init__(self):
+        self.x = random.randint(0, 156)
+        self.y = random.randint(-120, 0)
+
+    def update(self):
+        self.y += 1
+
+        # 画面の下まで落ちたら、上に戻す
+        if self.y > 120:
+            self.x = random.randint(0, 156)
+            self.y = random.randint(-30, 0)
+
+    def draw(self):
+        # 小さな隕石を描画
+        pyxel.circ(self.x + 2, self.y + 2, 2, 8)
+
+
+class Game:
+    def __init__(self):
+        self.player = Player(75, 100)
+
+        # 隕石を複数生成
+        self.meteors = []
+        for i in range(5):
+            self.meteors.append(Meteor())
+
+        self.state = "playing"
+
+    def collision(self, meteor):
+        return (
+            self.player.x < meteor.x + 4
+            and self.player.x + 10 > meteor.x
+            and self.player.y < meteor.y + 4
+            and self.player.y + 10 > meteor.y
+        )
+
+    def update(self):
+        if self.state == "gameover":
+            return
+
+        self.player.update()
+
+        # すべての隕石を更新し、衝突判定
+        for meteor in self.meteors:
+            meteor.update()
+
+            if self.collision(meteor):
+                self.state = "gameover"
+
+    def draw(self):
+        pyxel.cls(0)
+
+        if self.state == "playing":
+            self.player.draw()
+
+            # すべての隕石を描画
+            for meteor in self.meteors:
+                meteor.draw()
+
+            pyxel.text(5, 5, "Avoid the meteors!", 7)
+
+        elif self.state == "gameover":
+            pyxel.cls(8)
+            pyxel.text(55, 55, "GAME OVER", 7)
+
+
+game = Game()
+
+pyxel.init(160, 120, title="Avoid the Meteors")
+pyxel.run(game.update, game.draw)
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pyxel Game</title>
+
+    <!-- Pyxel Web Runtime -->
+    <script src="https://cdn.jsdelivr.net/gh/kitao/pyxel/wasm/pyxel.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: #101020;
+            color: #ffffff;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .game-container {
+            padding: 16px;
+            background: #202038;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+        }
+
+        .back-link {
+            color: #00ffff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pyxel Game</h1>
+
+    <div class="game-container">
+        <!-- 読み込むPythonファイルを指定 -->
+        <pyxel-run root="." name="07.py"></pyxel-run>
+    </div>
+
+    <a class="back-link" href="./index.html">
+        ← 問題一覧に戻る
+    </a>
+</body>
+</html>import pyxel
+
+
+class Player:
+    def __init__(self):
+        self.x = 5
+        self.y = 105
+        self.vy = 0
+        self.jumping = False
+
+    def update(self, blocks):
+        # 左右移動
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 2
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 2
+
+        # ジャンプ
+        if pyxel.btnp(pyxel.KEY_SPACE) and not self.jumping:
+            self.vy = -5
+            self.jumping = True
+
+        # 重力
+        old_y = self.y
+        self.vy += 0.25
+        self.y += self.vy
+
+        # ブロックとの衝突判定
+        for block in blocks:
+            bx, by, bw, bh, color = block
+
+            # 横方向に重なっているか
+            if self.x + 6 > bx and self.x < bx + bw:
+                # 上から着地したか
+                if old_y + 6 <= by and self.y + 6 >= by and self.vy >= 0:
+                    self.y = by - 6
+                    self.vy = 0
+                    self.jumping = False
+
+        # 落下したら最初から
+        if self.y > 120:
+            self.x = 5
+            self.y = 105
+            self.vy = 0
+            self.jumping = False
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, 6, 6, 7)
+
+
+class Game:
+    def __init__(self):
+        pyxel.init(160, 120, title="Jump Game")
+
+        self.player = Player()
+
+        # 左から段々高くなる4つのブロック
+        self.blocks = [
+            (0, 112, 35, 8, 7),
+            (35, 92, 35, 8, 7),
+            (70, 72, 35, 8, 7),
+            (105, 52, 35, 8, 10),
+        ]
+
+        self.clear = False
+
+        pyxel.run(self.update, self.draw)
+
+    def update(self):
+        if self.clear:
+            return
+
+        self.player.update(self.blocks)
+
+        # 最後のブロックに到達したらクリア
+        if (
+           """到達したかを判定したい。"""
+        ):
+            self.clear = True
+
+    def draw(self):
+        pyxel.cls(0)
+
+        # ブロックを描画
+        for i, block in enumerate(self.blocks):
+            x, y, w, h, color = block
+            pyxel.rect(x, y, w, h, color)
+
+        self.player.draw()
+
+        if self.clear:
+            pyxel.text(60, 20, "CLEAR!", 10)
+
+
+Game()
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pyxel Game</title>
+
+    <!-- Pyxel Web Runtime -->
+    <script src="https://cdn.jsdelivr.net/gh/kitao/pyxel/wasm/pyxel.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: #101020;
+            color: #ffffff;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .game-container {
+            padding: 16px;
+            background: #202038;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+        }
+
+        .back-link {
+            color: #00ffff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pyxel Game</h1>
+
+    <div class="game-container">
+        <!-- 読み込むPythonファイルを指定 -->
+        <pyxel-run root="." name="08.py"></pyxel-run>
+    </div>
+
+    <a class="back-link" href="./index.html">
+        ← 問題一覧に戻る
+    </a>
+</body>
+</html>import pyxel
+
+
+class Terrain:
+    def __init__(self, x, y, w, h, kind):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.kind = kind
+
+    def draw(self):
+        if self.kind == "semi":
+            # 半当たり地形は薄い線で表示
+            pyxel.rect(self.x, self.y, self.w, 2, 11)
+        else:
+            # ブロックは通常の四角形で表示
+            pyxel.rect(self.x, self.y, self.w, self.h, 5)
+
+
+class Player:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.w = 8
+        self.h = 8
+
+        self.vx = 0
+        self.vy = 0
+        self.speed = 2
+        self.jumping = False
+
+    def update(self, terrains):
+        # 横方向の移動量を決める
+        self.vx = 0
+
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.vx = -self.speed
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.vx = self.speed
+
+        # ジャンプ
+        if pyxel.btnp(pyxel.KEY_SPACE) and not self.jumping:
+            self.vy = -4
+            self.jumping = True
+
+        # 横方向の移動前の座標を保存
+        old_x = self.x
+
+        # 横方向に移動
+        self.x += self.vx
+
+        # 横方向の衝突判定
+        for terrain in terrains:
+            if terrain.kind == "block":
+                self.collision_block_horizontal(terrain, old_x)
+            elif terrain.kind == "semi":
+                self.collision_semi_horizontal(terrain)
+
+        # 画面外に出ないようにする
+        self.x = max(0, min(self.x, 160 - self.w))
+
+        # 重力
+        old_y = self.y
+        self.vy += 0.2
+
+        # 縦方向に移動
+        self.y += self.vy
+
+        # 縦方向の衝突判定
+        for terrain in terrains:
+            if terrain.kind == "semi":
+                self.collision_semi_vertical(terrain, old_y)
+            elif terrain.kind == "block":
+                self.collision_block_vertical(terrain, old_y)
+
+    # 半当たり地形：縦方向の衝突
+    def collision_semi_vertical(self, terrain, old_y):
+        # 横方向に重なっていなければ衝突しない
+        if self.x + self.w <= terrain.x or self.x >= terrain.x + terrain.w:
+            return
+
+        # 上から落下して地形に乗る
+        if (
+            self.vy >= 0
+            and old_y + self.h <= terrain.y
+            and self.y + self.h >= terrain.y
+        ):
+            self.y = terrain.y - self.h
+            self.vy = 0
+            self.jumping = False
+
+    # 半当たり地形：横方向の衝突
+    def collision_semi_horizontal(self, terrain):
+        # 横からは通り抜けられる
+        pass
+
+    # ブロック：縦方向の衝突
+    def collision_block_vertical(self, terrain, old_y):
+        # 横方向に重なっていなければ衝突しない
+        if self.x + self.w <= terrain.x or self.x >= terrain.x + terrain.w:
+            return
+
+        # 上からブロックに当たる
+        if (
+            self.vy >= 0
+            and old_y + self.h <= terrain.y
+            and self.y + self.h >= terrain.y
+        ):
+            self.y = terrain.y - self.h
+            self.vy = 0
+            self.jumping = False
+
+        # 下からブロックに頭をぶつける
+        elif (
+            self.vy < 0
+            and old_y >= terrain.y + terrain.h
+            and self.y <= terrain.y + terrain.h
+        ):
+            self.y = terrain.y + terrain.h
+            self.vy = 0
+
+    # ブロック：横方向の衝突
+    def collision_block_horizontal(self, terrain, old_x):
+        # 縦方向に重なっていなければ衝突しない
+        if self.y + self.h <= terrain.y or self.y >= terrain.y + terrain.h:
+            return
+
+        # 右に移動してブロックの左側に当たる
+        if (
+            self.vx > 0
+            and old_x + self.w <= terrain.x
+            and self.x + self.w >= terrain.x
+        ):
+            self.x = terrain.x - self.w
+
+        # 左に移動してブロックの右側に当たる
+        elif (
+            self.vx < 0
+            and old_x >= terrain.x + terrain.w
+            and self.x <= terrain.x + terrain.w
+        ):
+            self.x = terrain.x + terrain.w
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, self.w, self.h, 8)
+
+
+class Game:
+    def __init__(self):
+        pyxel.init(160, 120, title="Terrain Collision")
+
+        self.player = Player(20, 90)
+
+        self.terrains = [
+            # 床
+            Terrain(0, 112, 160, 8, "block"),
+
+            # 半当たり地形
+            Terrain(10, 85, 55, 2, "semi"),
+            Terrain(20, 65, 35, 2, "semi"),
+
+            # ブロック
+            Terrain(95, 45, 50, 8, "block"),
+            Terrain(120, 45, 8, 35, "block"),
+        ]
+
+        pyxel.run(self.update, self.draw)
+
+    def update(self):
+        self.player.update(self.terrains)
+
+    def draw(self):
+        pyxel.cls(7)
+
+        for terrain in self.terrains:
+            terrain.draw()
+
+        self.player.draw()
+
+        pyxel.text(5, 5, "SPACE: Jump", 0)
+
+
+Game()
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pyxel Game</title>
+
+    <!-- Pyxel Web Runtime -->
+    <script src="https://cdn.jsdelivr.net/gh/kitao/pyxel/wasm/pyxel.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: #101020;
+            color: #ffffff;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .game-container {
+            padding: 16px;
+            background: #202038;
+            border: 2px solid #00ffff;
+            border-radius: 8px;
+        }
+
+        .back-link {
+            color: #00ffff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pyxel Game</h1>
+
+    <div class="game-container">
+        <!-- 読み込むPythonファイルを指定 -->
+        <pyxel-run root="." name="09.py"></pyxel-run>
+    </div>
+
+    <a class="back-link" href="./index.html">
+        ← 問題一覧に戻る
+    </a>
+</body>
+</html>
+import pyxel
+
+# 0: 通路、1: 壁
+maze = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+    [1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+    [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+]
+
+
+class Player:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def update(self):
+        nx = self.x
+        ny = self.y
+
+        # 移動先を決める
+        if pyxel.btnp(pyxel.KEY_UP):
+            ny -= 1
+        elif pyxel.btnp(pyxel.KEY_DOWN):
+            ny += 1
+        elif pyxel.btnp(pyxel.KEY_LEFT):
+            nx -= 1
+        elif pyxel.btnp(pyxel.KEY_RIGHT):
+            nx += 1
+
+        # 画面外に出ていないか確認
+        if 0 <= nx < 16 and 0 <= ny < 16:
+            # 通路なら移動する
+            if maze[ny][nx] == 0:
+                self.x = nx
+                self.y = ny
+
+    def draw(self):
+        # プレイヤーを描画
+        pyxel.rect(
+            self.x * 10 + 2,
+            self.y * 10 + 2,
+            6,
+            6,
+            10
+        )
+
+
+class Game:
+    def __init__(self):
+        self.player = Player(1, 1)
+        self.goal_x = 14
+        self.goal_y = 14
+        self.cleared = False
+
+    def update(self):
+        if not self.cleared:
+            self.player.update()
+
+            # ゴールに到達したか確認
+            if (
+                self.player.x == self.goal_x
+                and self.player.y == self.goal_y
+            ):
+                self.cleared = True
+
+    def draw(self):
+        pyxel.cls(0)
+
+        # 迷路を描画
+        for y in range(16):
+            for x in range(16):
+                if maze[y][x] == 1:
+                    color = 5   # 壁
+                else:
+                    color = 11  # 通路
+
+                pyxel.rect(
+                    x * 10,
+                    y * 10,
+                    10,
+                    10,
+                    color
+                )
+
+        # ゴールを描画
+        pyxel.rect(
+            self.goal_x * 10 + 2,
+            self.goal_y * 10 + 2,
+            6,
+            6,
+            8
+        )
+
+        # プレイヤーを描画
+        self.player.draw()
+
+        # クリア表示
+        if self.cleared:
+            pyxel.rect(35, 65, 90, 30, 0)
+            pyxel.text(57, 77, "GAME CLEAR!", 10)
+
+
+pyxel.init(160, 160, title="Maze")
+game = Game()
+pyxel.run(game.update, game.draw)
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pyxel 問題集</title>
+
+  <!-- YAMLの解析 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+
+  <!-- Pythonのシンタックスハイライト -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css"
+  >
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/python.min.js"></script>
+
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&display=swap');
+
+  :root {
+    --bg: #080b18;
+    --panel: #11172b;
+    --panel-light: #18213b;
+    --cyan: #00f5ff;
+    --pink: #ff4bd8;
+    --yellow: #ffe66d;
+    --text: #e8edff;
+    --muted: #929bbd;
+    --border: #303c68;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 22px 48px;
+    font-family: 'DotGothic16', monospace;
+    line-height: 1.8;
+    color: var(--text);
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(rgba(0, 245, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 245, 255, 0.025) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.12;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 3px,
+      #000 4px
+    );
+  }
+
+  h1 {
+    margin: 0;
+    padding: 22px 12px;
+    text-align: center;
+    color: var(--cyan);
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(18px, 4vw, 30px);
+    line-height: 1.8;
+    text-shadow:
+      3px 3px 0 #174c85,
+      0 0 18px rgba(0, 245, 255, 0.35);
+    border-top: 2px solid var(--cyan);
+    border-bottom: 2px solid var(--cyan);
+  }
+
+  body > p {
+    text-align: center;
+    color: var(--muted);
+    margin: 18px 0 32px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--pink);
+    font-size: 14px;
+  }
+
+  select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 24px;
+    font: inherit;
+    color: var(--cyan);
+    background: var(--panel);
+    border: 2px solid var(--border);
+    border-radius: 0;
+    outline: none;
+  }
+
+  select:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 12px rgba(0, 245, 255, 0.2);
+  }
+
+  main {
+    padding: clamp(16px, 4vw, 30px);
+    background: rgba(17, 23, 43, 0.96);
+    border: 2px solid var(--border);
+    box-shadow:
+      6px 6px 0 #03050d,
+      0 0 24px rgba(0, 245, 255, 0.05);
+  }
+
+  h2 {
+    margin: 28px 0 12px;
+    padding: 8px 12px;
+    color: var(--cyan);
+    background: var(--panel-light);
+    border-left: 4px solid var(--pink);
+    font-size: 18px;
+  }
+
+  #problem-title {
+    margin-top: 0;
+    border-left-color: var(--yellow);
+  }
+
+  #problem-description,
+  #problem-instructions {
+    color: #c1c9e5;
+  }
+
+  #problem-instructions li {
+    margin: 6px 0;
+  }
+
+  .code-container {
+    position: relative;
+    width: 100%;
+    height: 460px;
+    overflow: hidden;
+    background: #070a12;
+    border: 2px solid var(--cyan);
+    border-radius: 0;
+    box-shadow: inset 0 0 18px rgba(0, 245, 255, 0.06);
+  }
+
+  #highlighted-code,
+  #practice-code {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 16px;
+    border: 0;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.65;
+    letter-spacing: normal;
+    tab-size: 4;
+    white-space: pre;
+    overflow: auto;
+  }
+
+  #highlighted-code {
+    z-index: 1;
+    pointer-events: none;
+    color: #e6edf3;
+    background: transparent;
+  }
+
+  #highlighted-code code {
+    display: block;
+    padding: 0;
+    font: inherit;
+    line-height: inherit;
+    background: transparent;
+  }
+
+  #practice-code {
+    z-index: 2;
+    resize: none;
+    background: transparent;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    caret-color: var(--yellow);
+    outline: none;
+  }
+
+  #practice-code::selection {
+    background: rgba(0, 245, 255, 0.28);
+  }
+
+  #status {
+    min-height: 1.8em;
+    color: var(--yellow);
+    font-size: 13px;
+  }
+
+  .game-link {
+    display: block;
+    position: relative;
+    margin: 24px 0 12px;
+    padding: 16px;
+    text-align: center;
+    color: #080b18;
+    background: var(--pink);
+    border: 2px solid #ffb0ed;
+    border-radius: 0;
+    box-shadow: 0 5px 0 #9a2381;
+    text-decoration: none;
+    font-weight: bold;
+    transition: transform 0.08s, box-shadow 0.08s;
+  }
+
+  .game-link::before {
+    content: "▶ ";
+  }
+
+  .game-link:hover {
+    color: #080b18;
+    background: #ff85e5;
+    box-shadow:
+      0 5px 0 #9a2381,
+      0 0 20px rgba(255, 75, 216, 0.25);
+  }
+
+  .game-link:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #9a2381;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px dashed var(--yellow);
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 20px 12px 32px;
+    }
+
+    main {
+      padding: 14px;
+    }
+
+    h1 {
+      font-size: 17px;
+    }
+
+    h2 {
+      font-size: 16px;
+    }
+
+    .code-container {
+      height: 400px;
+    }
+  }
+</style>
+
+</head>
+
+<body>
+  <h1>Pyxel 問題集</h1>
+  <p>Python と Pyxel で、プログラミングの基礎を身につけよう。</p>
+
+  <label for="problem-select">問題を選択：</label>
+  <select id="problem-select">
+    <option>読み込み中...</option>
+  </select>
+
+  <main>
+    <h2 id="problem-title">読み込み中...</h2>
+
+    <p id="problem-description" class="description"></p>
+
+    <ul id="problem-instructions"></ul>
+
+    <h2>穴埋めコード</h2>
+
+    <p>
+      コードを編集できます。キーワードや文字列などは自動で色分けされます。
+    </p>
+
+    <div class="code-container">
+      <pre id="highlighted-code" aria-hidden="true"><code class="language-python"></code></pre>
+      <textarea
+        id="practice-code"
+        spellcheck="false"
+        wrap="off"
+        aria-label="穴埋め用Pythonコード"
+        autocomplete="off"
+        autocapitalize="off"
+      ></textarea>
+    </div>
+
+    <p>
+      <a id="game-link" class="game-link" href="./01.html">
+        解答例のゲームを遊ぶ
+      </a>
+    </p>
+
+    <p id="status" role="status"></p>
+  </main>
+
+  <script>
+    let problems = [];
+
+    const select = document.getElementById("problem-select");
+    const title = document.getElementById("problem-title");
+    const description = document.getElementById("problem-description");
+    const instructions = document.getElementById("problem-instructions");
+    const codeArea = document.getElementById("practice-code");
+    const highlightedCode = document.querySelector("#highlighted-code code");
+    const highlightedPre = document.getElementById("highlighted-code");
+    const gameLink = document.getElementById("game-link");
+    const status = document.getElementById("status");
+
+    // 指定されたファイルをテキストとして読み込む
+    async function fetchText(path) {
+      const response = await fetch(path);
+
+      if (!response.ok) {
+        throw new Error(
+          `${path} を読み込めませんでした（HTTP ${response.status}）`
+        );
+      }
+
+      return response.text();
+    }
+
+    // コードのシンタックスハイライトを更新する
+    function updateHighlight() {
+      const code = codeArea.value;
+
+      highlightedCode.innerHTML = hljs.highlight(
+        code,
+        { language: "python" }
+      ).value;
+
+      // 最後の改行がある場合も表示位置を維持する
+      if (code.endsWith("\n")) {
+        highlightedCode.innerHTML += "\n";
+      }
+
+      syncScroll();
+    }
+
+    // 編集領域とハイライト表示のスクロール位置を同期する
+    function syncScroll() {
+      highlightedPre.scrollTop = codeArea.scrollTop;
+      highlightedPre.scrollLeft = codeArea.scrollLeft;
+    }
+
+    // 問題を表示する
+    async function showProblem(id) {
+      const problem = problems.find(item => item.id === id);
+
+      if (!problem) {
+        status.textContent = "指定された問題が見つかりません。";
+        return;
+      }
+
+      title.textContent = `${problem.id}：${problem.title}`;
+      description.textContent = problem.description || "";
+
+      instructions.replaceChildren();
+
+      for (const instruction of problem.instructions || []) {
+        const li = document.createElement("li");
+        li.textContent = instruction;
+        instructions.appendChild(li);
+      }
+
+      // ファイル名は問題番号から自動生成する
+      const practicePath = `./p${problem.id}.py`;
+      const gamePath = `./${problem.id}.html`;
+
+      gameLink.href = gamePath;
+      codeArea.value = "";
+      updateHighlight();
+
+      status.textContent = `${practicePath} を読み込んでいます……`;
+
+      select.value = problem.id;
+
+      // URLに現在の問題番号を反映する
+      const url = new URL(window.location.href);
+      url.searchParams.set("id", problem.id);
+      history.replaceState(null, "", url);
+
+      try {
+        codeArea.value = await fetchText(practicePath);
+        updateHighlight();
+        status.textContent = "";
+      } catch (error) {
+        status.textContent = error.message;
+      }
+    }
+
+    // 初期化
+    async function main() {
+      try {
+        const yamlText = await fetchText("./problems.yaml");
+        problems = jsyaml.load(yamlText);
+
+        if (!Array.isArray(problems) || problems.length === 0) {
+          throw new Error("問題データが空か、形式が正しくありません。");
+        }
+
+        select.replaceChildren();
+
+        for (const problem of problems) {
+          const option = document.createElement("option");
+          option.value = problem.id;
+          option.textContent = `${problem.id}：${problem.title}`;
+          select.appendChild(option);
+        }
+
+        select.addEventListener("change", () => {
+          showProblem(select.value);
+        });
+
+        // コードを編集したときにハイライトを更新する
+        codeArea.addEventListener("input", updateHighlight);
+
+        // スクロール位置を同期する
+        codeArea.addEventListener("scroll", syncScroll);
+
+        // URLの ?id=01 から初期表示する問題を決定する
+        const requestedId = new URLSearchParams(
+          window.location.search
+        ).get("id");
+
+        const initialProblem = problems.find(
+          problem => problem.id === requestedId
+        ) || problems[0];
+
+        await showProblem(initialProblem.id);
+
+      } catch (error) {
+        title.textContent = "読み込みエラー";
+        status.textContent = error.message;
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>import pyxel
+
+
+class Player:
+    def __init__(self, x, y, color):
+        self.x = x
+        self.y = y
+        self.color = color
+
+    def update(self):
+        if pyxel.btn(pyxel.KEY_LEFT):
+            """左に動かす"""
+            pass
+
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            """右に動かす"""
+            pass
+
+        # 画面外に出ないようにする
+        """xを0から150の範囲に制限したい。"""
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, 10, 10, self.color)
+
+
+class Game:
+    def __init__(self):
+        self.player = Player(75, 50, 7)
+
+    def update(self):
+        self.player.update()
+
+    def draw(self):
+        pyxel.cls(0)
+        self.player.draw()
+
+
+game = Game()
+
+pyxel.init(160, 120, title="Move the Square")
+pyxel.run(game.update, game.draw)import pyxel
+
+
+class Player:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.vy = 0
+        self.jumping = False
+
+    def update(self):
+        # 上キーでジャンプ
+        if pyxel.btnp(pyxel.KEY_UP) and not self.jumping:
+            self.vy = -5
+            self.jumping = True
+
+        # 重力によって落下する
+        """vyを増やし、yに加算したい。"""
+
+        # 地面との当たり判定
+        if self.y >= 100:
+            """y方向に停止させたい。"""
+            pass
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 2
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 2
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, 10, 10, 7)
+
+
+class Game:
+    def __init__(self):
+        self.player = Player(75, 90)
+
+    def update(self):
+        self.player.update()
+
+    def draw(self):
+        pyxel.cls(0)
+
+        # 地面の線
+        pyxel.line(0, 110, 160, 110, 11)
+
+        self.player.draw()
+
+
+game = Game()
+
+pyxel.init(160, 120, title="Jump Game")
+pyxel.run(game.update, game.draw)import pyxel
+
+
+class Game:
+    def __init__(self):
+        self.count = 0
+
+    def update(self):
+        """上キーで1増やす処理と下キーで1減らす処理を追加したい。btnとbtnpの違いを意識して書くと良い。"""
+
+    def draw(self):
+        pyxel.cls(0)
+
+        # 数値を画面に表示する
+        pyxel.text(70, 55, f"Count: {self.count}", 7)
+
+
+game = Game()
+
+pyxel.init(160, 120, title="Counter")
+pyxel.run(game.update, game.draw)import pyxel
+import random
+
+
+class Player:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def update(self):
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 1
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 1
+        if pyxel.btn(pyxel.KEY_UP):
+            self.y -= 1
+        if pyxel.btn(pyxel.KEY_DOWN):
+            self.y += 1
+
+        # 画面外に出ないようにする
+        self.x = max(0, min(self.x, 154))
+        self.y = max(0, min(self.y, 114))
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, 6, 6, 7)
+
+
+class Point:
+    def __init__(self):
+        """x,y座標の目標ポイントをランダムに決める"。Pythonのrandomint関数の仕様を調べてみてほしい。"""
+
+    def draw(self):
+        # 目標ポイントを表示
+        pyxel.circ(self.x + 3, self.y + 3, 3, 10)
+
+
+class Game:
+    def __init__(self):
+        self.player = Player(75, 55)
+        self.point = Point()
+
+        self.distance = self.get_distance()
+        self.state = "playing"
+
+    def get_distance(self):
+        dx = self.player.x - self.point.x
+        dy = self.player.y - self.point.y
+
+        return (dx ** 2 + dy ** 2) ** 0.5
+
+    def update(self):
+        if self.state != "playing":
+            return
+
+        self.player.update()
+        self.distance = self.get_distance()
+
+        # Spaceキーで答え合わせ
+        if pyxel.btnp(pyxel.KEY_SPACE):
+            if self.distance <= 10:
+                self.state = "clear"
+            else:
+                self.state = "gameover"
+
+    def draw(self):
+        pyxel.cls(0)
+
+        if self.state == "playing":
+            self.player.draw()
+
+            pyxel.text(5, 5, f"Distance: {self.distance:.1f}", 7)
+            pyxel.text(5, 15, "Find the hidden point!", 7)
+            pyxel.text(5, 25, "Arrow: Move  SPACE: Check", 7)
+
+        elif self.state == "clear":
+            pyxel.cls(3)
+
+            # プレイヤーからポイントまでラインを引く
+            pyxel.line(
+                self.player.x + 3,
+                self.player.y + 3,
+                self.point.x + 3,
+                self.point.y + 3,
+                7
+            )
+
+            self.point.draw()
+            self.player.draw()
+
+            pyxel.text(65, 10, "CLEAR!", 7)
+            pyxel.text(35, 20, "You found the point!", 7)
+
+        elif self.state == "gameover":
+            pyxel.cls(8)
+
+            # プレイヤーからポイントまでラインを引く
+            pyxel.line(
+                self.player.x + 3,
+                self.player.y + 3,
+                self.point.x + 3,
+                self.point.y + 3,
+                7
+            )
+
+            self.point.draw()
+            self.player.draw()
+
+            pyxel.text(55, 10, "GAME OVER", 7)
+            pyxel.text(35, 20, "The point is here!", 7)
+
+
+game = Game()
+
+pyxel.init(160, 120, title="Find the Point")
+pyxel.run(game.update, game.draw)import pyxel
+
+
+# 共通する機能を持つ親クラス
+class Player:
+    def __init__(self, x, y, color):
+        self.x = x
+        self.y = y
+        self.color = color
+
+    def update(self):
+        pass
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, 10, 10, self.color)
+
+
+# WASDキーで動く子クラス
+class WASDPlayer(Player):
+    def __init__(self, x, y, color):
+        super().__init__(x, y, color)
+
+    def update(self):
+        if pyxel.btn(pyxel.KEY_A):
+            self.x -= 1
+        if pyxel.btn(pyxel.KEY_D):
+            self.x += 1
+        if pyxel.btn(pyxel.KEY_W):
+            self.y -= 1
+        if pyxel.btn(pyxel.KEY_S):
+            self.y += 1
+
+
+# 矢印キーで動く子クラス
+class ArrowPlayer(Player):
+    def __init__(self, x, y, color):
+        super().__init__(x, y, color)
+
+    def update(self):
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 1
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 1
+        if pyxel.btn(pyxel.KEY_UP):
+            self.y -= 1
+        if pyxel.btn(pyxel.KEY_DOWN):
+            self.y += 1
+
+
+class Game:
+    def __init__(self):
+        self.player1 = WASDPlayer(30, 50, 7)
+        self.player2 = ArrowPlayer(120, 50, 8)
+        self.state = "playing"
+
+    def collision(self):
+        # 2人のプレイヤーが重なったか判定
+        if (
+    """重なっているかを判定したい。"""
+        ):
+            return True
+
+        return False
+
+    def update(self):
+        if self.state == "gameover":
+            return
+
+        self.player1.update()
+        self.player2.update()
+
+        # 衝突したらゲームオーバー
+        if self.collision():
+            self.state = "gameover"
+
+    def draw(self):
+        pyxel.cls(0)
+
+        if self.state == "playing":
+            self.player1.draw()
+            self.player2.draw()
+
+        elif self.state == "gameover":
+            pyxel.cls(8)
+            pyxel.text(55, 55, "GAME OVER", 7)
+
+
+game = Game()
+
+pyxel.init(160, 120)
+pyxel.run(game.update, game.draw)import pyxel
+import random
+
+
+class Player:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def update(self):
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 2
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 2
+
+        self.x = max(0, min(self.x, 150))
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, 10, 10, 7)
+
+
+class Meteor:
+    def __init__(self):
+        self.x = random.randint(0, 156)
+        self.y = random.randint(-120, 0)
+
+    def update(self):
+        self.y += 1
+
+        # 画面の下まで落ちたら、上に戻す
+        if self.y > 120:
+            self.x = random.randint(0, 156)
+            self.y = random.randint(-30, 0)
+
+    def draw(self):
+        # 小さな隕石を描画
+        pyxel.circ(self.x + 2, self.y + 2, 2, 8)
+
+
+class Game:
+    def __init__(self):
+        self.player = Player(75, 100)
+
+        # 隕石を複数生成
+        self.meteors = []
+        for i in range(5):
+            self.meteors.append(Meteor())
+
+        self.state = "playing"
+
+    def collision(self, meteor):
+        return (
+            self.player.x < meteor.x + 4
+            and self.player.x + 10 > meteor.x
+            and self.player.y < meteor.y + 4
+            and self.player.y + 10 > meteor.y
+        )
+
+    def update(self):
+        if self.state == "gameover":
+            return
+
+        self.player.update()
+
+        # すべての隕石を更新し、衝突判定
+        for meteor in self.meteors:
+            meteor.update()
+
+            if self.collision(meteor):
+                self.state = "gameover"
+
+    def draw(self):
+        pyxel.cls(0)
+
+        if self.state == "playing":
+            self.player.draw()
+
+            # すべての隕石を描画
+            for meteor in self.meteors:
+                meteor.draw()
+
+            pyxel.text(5, 5, "Avoid the meteors!", 7)
+
+        elif self.state == "gameover":
+            """ゲームオーバー画面を表示"""
+
+
+game = Game()
+
+pyxel.init(160, 120, title="Avoid the Meteors")
+pyxel.run(game.update, game.draw)import pyxel
+
+
+class Player:
+    def __init__(self):
+        self.x = 5
+        self.y = 105
+        self.vy = 0
+        self.jumping = False
+
+    def update(self, blocks):
+        # 左右移動
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 2
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 2
+
+        # ジャンプ
+        if pyxel.btnp(pyxel.KEY_SPACE) and not self.jumping:
+            self.vy = -5
+            self.jumping = True
+
+        # 重力
+        old_y = self.y
+        self.vy += 0.25
+        self.y += self.vy
+
+        # ブロックとの衝突判定
+        for block in blocks:
+            bx, by, bw, bh, color = block
+
+            # 横方向に重なっているか
+            if self.x + 6 > bx and self.x < bx + bw:
+                # 上から着地したか
+                if old_y + 6 <= by and self.y + 6 >= by and self.vy >= 0:
+                    self.y = by - 6
+                    self.vy = 0
+                    self.jumping = False
+
+        # 落下したら最初から
+        if self.y > 120:
+            self.x = 5
+            self.y = 105
+            self.vy = 0
+            self.jumping = False
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, 6, 6, 7)
+
+
+class Game:
+    def __init__(self):
+        pyxel.init(160, 120, title="Jump Game")
+
+        self.player = Player()
+
+        # 左から段々高くなる4つのブロック
+        self.blocks = [
+            (0, 112, 35, 8, 7),
+            (35, 92, 35, 8, 7),
+            (70, 72, 35, 8, 7),
+            (105, 52, 35, 8, 10),
+        ]
+
+        self.clear = False
+
+        pyxel.run(self.update, self.draw)
+
+    def update(self):
+        if self.clear:
+            return
+
+        self.player.update(self.blocks)
+
+        # 最後のブロックに到達したらクリア
+        bx, by, bw, bh, color = self.blocks[-1]
+        if (
+            self.player.x + 6 > bx
+            and self.player.x < bx + bw
+            and self.player.y + 6 <= by
+            and self.player.y + 6 >= by - 2
+        ):
+            self.clear = True
+
+    def draw(self):
+        pyxel.cls(0)
+
+        # ブロックを描画
+        for i, block in enumerate(self.blocks):
+            x, y, w, h, color = block
+            pyxel.rect(x, y, w, h, color)
+
+        self.player.draw()
+
+        if self.clear:
+            pyxel.text(60, 20, "CLEAR!", 10)
+
+
+Game()import pyxel
+
+
+class Terrain:
+    def __init__(self, x, y, w, h, kind):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.kind = kind
+
+    def draw(self):
+        if self.kind == "semi":
+            # 半当たり地形は薄い線で表示
+            pyxel.rect(self.x, self.y, self.w, 2, 11)
+        else:
+            # ブロックは通常の四角形で表示
+            pyxel.rect(self.x, self.y, self.w, self.h, 5)
+
+
+class Player:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.w = 8
+        self.h = 8
+
+        self.vx = 0
+        self.vy = 0
+        self.speed = 2
+        self.jumping = False
+
+    def update(self, terrains):
+        # 横方向の移動量を決める
+        self.vx = 0
+
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.vx = -self.speed
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.vx = self.speed
+
+        # ジャンプ
+        if pyxel.btnp(pyxel.KEY_SPACE) and not self.jumping:
+            self.vy = -4
+            self.jumping = True
+
+        # 横方向の移動前の座標を保存
+        old_x = self.x
+
+        # 横方向に移動
+        self.x += self.vx
+
+        # 横方向の衝突判定
+        for terrain in terrains:
+            if terrain.kind == "block":
+                self.collision_block_horizontal(terrain, old_x)
+            elif terrain.kind == "semi":
+                self.collision_semi_horizontal(terrain)
+
+        # 画面外に出ないようにする
+        self.x = max(0, min(self.x, 160 - self.w))
+
+        # 重力
+        old_y = self.y
+        self.vy += 0.2
+
+        # 縦方向に移動
+        self.y += self.vy
+
+        # 縦方向の衝突判定
+        for terrain in terrains:
+            if terrain.kind == "semi":
+                self.collision_semi_vertical(terrain, old_y)
+            elif terrain.kind == "block":
+                self.collision_block_vertical(terrain, old_y)
+
+    # 半当たり地形：縦方向の衝突
+    def collision_semi_vertical(self, terrain, old_y):
+        # 横方向に重なっていなければ衝突しない
+        if self.x + self.w <= terrain.x or self.x >= terrain.x + terrain.w:
+            return
+
+        # 上から落下して地形に乗る
+        if (
+            self.vy >= 0
+            and old_y + self.h <= terrain.y
+            and self.y + self.h >= terrain.y
+        ):
+            self.y = terrain.y - self.h
+            self.vy = 0
+            self.jumping = False
+
+    # 半当たり地形：横方向の衝突
+    def collision_semi_horizontal(self, terrain):
+        # 横からは通り抜けられる
+        pass
+
+    # ブロック：縦方向の衝突
+    def collision_block_vertical(self, terrain, old_y):
+        # 横方向に重なっていなければ衝突しない
+        if self.x + self.w <= terrain.x or self.x >= terrain.x + terrain.w:
+            return
+
+        # 上からブロックに当たる
+        if (
+            self.vy >= 0
+            and old_y + self.h <= terrain.y
+            and self.y + self.h >= terrain.y
+        ):
+            self.y = terrain.y - self.h
+            self.vy = 0
+            self.jumping = False
+
+        # 下からブロックに頭をぶつける
+        elif (
+            self.vy < 0
+            and old_y >= terrain.y + terrain.h
+            and self.y <= terrain.y + terrain.h
+        ):
+            self.y = terrain.y + terrain.h
+            self.vy = 0
+
+    # ブロック：横方向の衝突
+    def collision_block_horizontal(self, terrain, old_x):
+        # 縦方向に重なっていなければ衝突しない
+        if self.y + self.h <= terrain.y or self.y >= terrain.y + terrain.h:
+            return
+
+        # 右に移動してブロックの左側に当たる
+        if (
+            self.vx > 0
+            and old_x + self.w <= terrain.x
+            and self.x + self.w >= terrain.x
+        ):
+            self.x = terrain.x - self.w
+
+        # 左に移動してブロックの右側に当たる
+        elif (
+            self.vx < 0
+            and old_x >= terrain.x + terrain.w
+            and self.x <= terrain.x + terrain.w
+        ):
+            self.x = terrain.x + terrain.w
+
+    def draw(self):
+        pyxel.rect(self.x, self.y, self.w, self.h, 8)
+
+
+class Game:
+    def __init__(self):
+        pyxel.init(160, 120, title="Terrain Collision")
+
+        self.player = Player(20, 90)
+
+        self.terrains = [
+            # 床
+            Terrain(0, 112, 160, 8, "block"),
+
+            # 半当たり地形
+            Terrain(10, 85, 55, 2, "semi"),
+            Terrain(20, 65, 35, 2, "semi"),
+
+            # ブロック
+            Terrain(95, 45, 50, 8, "block"),
+            Terrain(120, 45, 8, 35, "block"),
+        ]
+
+        pyxel.run(self.update, self.draw)
+
+    def update(self):
+        self.player.update(self.terrains)
+
+    def draw(self):
+        pyxel.cls(7)
+
+        for terrain in self.terrains:
+            terrain.draw()
+
+        self.player.draw()
+
+        pyxel.text(5, 5, "SPACE: Jump", 0)
+
+
+Game()
+import pyxel
+
+# 0: 通路、1: 壁
+maze = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+    [1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+    [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+]
+
+
+class Player:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def update(self):
+        """
+        移動の処理を書く
+        """
+
+    def draw(self):
+        # プレイヤーを描画
+        pyxel.rect(
+            self.x * 10 + 2,
+            self.y * 10 + 2,
+            6,
+            6,
+            10
+        )
+
+
+class Game:
+    def __init__(self):
+        self.player = Player(1, 1)
+        self.goal_x = 14
+        self.goal_y = 14
+        self.cleared = False
+
+    def update(self):
+        if not self.cleared:
+            self.player.update()
+
+            # ゴールに到達したか確認
+            if (
+                self.player.x == self.goal_x
+                and self.player.y == self.goal_y
+            ):
+                self.cleared = True
+
+    def draw(self):
+        pyxel.cls(0)
+
+        # 迷路を描画
+        for y in range(16):
+            for x in range(16):
+                if maze[y][x] == 1:
+                    color = 5   # 壁
+                else:
+                    color = 11  # 通路
+
+                pyxel.rect(
+                    x * 10,
+                    y * 10,
+                    10,
+                    10,
+                    color
+                )
+
+        # ゴールを描画
+        pyxel.rect(
+            self.goal_x * 10 + 2,
+            self.goal_y * 10 + 2,
+            6,
+            6,
+            8
+        )
+
+        # プレイヤーを描画
+        self.player.draw()
+
+        # クリア表示
+        if self.cleared:
+            pyxel.rect(35, 65, 90, 30, 0)
+            pyxel.text(57, 77, "GAME CLEAR!", 10)
+
+
+pyxel.init(160, 160, title="Maze")
+game = Game()
+pyxel.run(game.update, game.draw)
+- id: "01"
+  title: "Move Rect"
+  description: |
+    画面に表示された四角形を、左右の矢印キーで操作しましょう。
+    四角形は画面の外に出ないように制御されています。
+  instructions:
+    - "← → キーで四角形を左右に移動させてください。"
+    - "四角形の位置を表す x 座標が、どのように変化するか観察しましょう。"
+    - "画面の端で移動が止まる仕組みを確認しましょう。"
+
+- id: "02"
+  title: "Do Jump"
+  description: |
+    上矢印キーでジャンプできるゲームを作りましょう。
+    プレイヤーは上昇したあと、重力によって落下します。
+    地面に着地すると、もう一度ジャンプできるようになります。
+  instructions:
+    - "← → キーで左右に移動してください。"
+    - "↑ キーを押してジャンプしてください。"
+    - "速度を表す vy と重力によって、ジャンプの軌道がどのように変化するか観察しましょう。"
+    - "空中にいる間は、再びジャンプできない仕組みを確認しましょう。"
+
+- id: "03"
+  title: "Make Counter"
+  description: |
+    キー入力に応じて数値が増減するカウンターを作りましょう。
+    現在の数値は画面上に表示されます。
+  instructions:
+    - "↑ キーを押すとカウントが 1 増えます。"
+    - "↓ キーを押すとカウントが 1 減ります。"
+    - "pyxel.btnp() と pyxel.btn() の違いを意識しましょう。"
+    - "数値を更新する処理と、画面に表示する処理の違いを確認しましょう。"
+
+- id: "04"
+  title: "Find The Flag"
+  description: |
+    画面のどこかに、目標となるポイントが隠されています。
+    プレイヤーを動かすと、目標までの距離が表示されます。
+    距離を手がかりにポイントの位置を推測しましょう。
+  instructions:
+    - "矢印キーでプレイヤーを上下左右に移動させてください。"
+    - "表示される Distance の数値を見ながら、目標に近づきましょう。"
+    - "Space キーで答え合わせをします。"
+    - "目標との距離が 10 以下ならクリア、そうでなければゲームオーバーです。"
+    - "2点間の距離を計算する方法と、ゲームの状態を管理する方法を確認しましょう。"
+
+- id: "05"
+  title: "Manipulate Two Players"
+  description: |
+    画面には、異なるキーで操作できる2人のプレイヤーが登場します。
+    2人が衝突するとゲームオーバーになります。
+    クラスの継承を利用して、それぞれ異なる操作方法を実現しましょう。
+  instructions:
+    - "プレイヤー1は W・A・S・D キーで操作します。"
+    - "プレイヤー2は矢印キーで操作します。"
+    - "2人が重ならないように移動させましょう。"
+    - "2つの四角形が重なったかどうかを判定する方法を確認しましょう。"
+    - "親クラス Player と子クラス WASDPlayer・ArrowPlayer の役割を確認しましょう。"
+
+- id: "06"
+  title: "Avoid Falling Rocks"
+  description: |
+    上から落ちてくる隕石を避け続けるゲームです。
+    隕石は画面の外に出ると、再び上から落ちてきます。
+    どれか1つでも隕石に衝突するとゲームオーバーです。
+  instructions:
+    - "← → キーでプレイヤーを左右に移動させてください。"
+    - "複数の隕石を避け続けましょう。"
+    - "隕石が画面の下まで落ちたときの動きを観察しましょう。"
+    - "リストに格納した複数のオブジェクトを、繰り返し処理で更新・描画する方法を確認しましょう。"
+    - "プレイヤーと隕石の衝突判定を確認しましょう。"
+
+- id: "07"
+  title: "Jump Over Blocks"
+  description: |
+    高さの異なるブロックをジャンプで渡り、最後の足場を目指しましょう。
+    ブロックの上に着地すると、その足場から再びジャンプできます。
+    画面の下に落ちると、スタート地点に戻されます。
+  instructions:
+    - "← → キーで移動し、Space キーでジャンプしてください。"
+    - "足場の位置や高さを考えながら、最後のブロックを目指しましょう。"
+    - "ブロックの上から着地したかどうかを判定する方法を確認しましょう。"
+    - "最後のブロックに到達するとクリアです。"
+    - "座標と速度を使って、キャラクターの移動や着地を管理する仕組みを理解しましょう。"
+
+- id: "08"
+  title: "Collision Detection"
+  description: |
+    このゲームには、上から乗れる足場と、上下左右からぶつかるブロックがあります。
+    地形の種類によって衝突判定を変えながら、プレイヤーを操作しましょう。
+  instructions:
+    - "← → キーで移動し、Space キーでジャンプしてください。"
+    - "薄い足場には上から乗れますが、横からは通り抜けられます。"
+    - "通常のブロックでは、横からの衝突や下から頭をぶつける衝突も発生します。"
+    - "地形の種類を表す kind によって、衝突判定の処理が切り替わる仕組みを確認しましょう。"
+    - "移動前の座標と移動後の座標を比較する理由を考えましょう。"
+
+- id: "09"
+  title: "Maze Runner"
+  description: |
+    画面に表示された四角形を、左右の矢印キーで操作しましょう。
+    四角形は画面の外に出ないように制御されています。
+  instructions:
+    - "← → キーで四角形を左右に移動させてください。"
+    - "四角形の位置を表す x 座標が、どのように変化するか観察しましょう。"
+    - "画面の端で移動が止まる仕組みを確認しましょう。"
+#!/bin/bash
+
+cd "$(dirname "$0")"
+
+echo "Starting server..."
+echo "Open http://localhost:8000/index.html in your browser."
+echo "Press Ctrl+C to stop the server."
+
+python3 -m http.server 8000

@@ -73,9 +73,16 @@ class Game:
         self.player.update(self.blocks)
 
         # 最後のブロックに到達したらクリア
+        last_block = self.blocks[-1]
+        bx, by, bw, bh, color = last_block
+
         if (
-           """到達したかを判定したい。"""
+            self.player.y + 6 == by
+            and self.player.x + 6 > bx
+            and self.player.x < bx + bw
+            and not self.player.jumping
         ):
+            self.clear = True
             self.clear = True
 
     def draw(self):

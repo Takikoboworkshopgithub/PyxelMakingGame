@@ -17,7 +17,7 @@ class Player:
             pass
 
         # 画面外に出ないようにする
-        """xを0から150の範囲に制限したい。"""
+        """正方形の動ける範囲を0から160に制限したい。rectの座標の仕様が左上参照なのでちょっと気を付ける必要があって、、"""
 
     def draw(self):
         pyxel.rect(self.x, self.y, 10, 10, self.color)

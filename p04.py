@@ -27,7 +27,7 @@ class Player:
 
 class Point:
     def __init__(self):
-        """x,y座標の目標ポイントをランダムに決める"。Pythonのrandomint関数の仕様を調べてみてほしい。"""
+        """x,y座標の目標ポイントをランダムに決める"。Pythonのrandomint関数の仕様を調べてみて"""
 
     def draw(self):
         # 目標ポイントを表示

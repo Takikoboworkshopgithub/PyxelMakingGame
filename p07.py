@@ -72,14 +72,7 @@ class Game:
 
         self.player.update(self.blocks)
 
-        # 最後のブロックに到達したらクリア
-        bx, by, bw, bh, color = self.blocks[-1]
-        if (
-            self.player.x + 6 > bx
-            and self.player.x < bx + bw
-            and self.player.y + 6 <= by
-            and self.player.y + 6 >= by - 2
-        ):
+        """最後のブロックに到達したらクリア。この処理はどのように記述しようか"""
             self.clear = True
 
     def draw(self):
