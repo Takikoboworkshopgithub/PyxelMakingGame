@@ -38,9 +38,8 @@ class Game:
         pyxel.run(self.update, self.draw)
 
     def get_tile(self, tx, ty):
-        """変更済みのタイルを取得"""
-
-        # 元のタイルを取得
+        """(tx, ty)が変更済みのタイルならそれをかえす"""
+        # ないなら元のタイルを取得
         return pyxel.tilemaps[0].pget(tx, ty)
 
     def can_move(self, x, y):
